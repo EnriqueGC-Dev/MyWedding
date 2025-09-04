@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('canciones', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('title');
             $table->string('artist');
             $table->string('photo')->nullable();
@@ -17,6 +18,8 @@ return new class extends Migration {
             $table->unsignedInteger('likes')->default(0);
             $table->unsignedInteger('dislikes')->default(0);
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

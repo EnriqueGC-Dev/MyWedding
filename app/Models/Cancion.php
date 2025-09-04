@@ -9,6 +9,7 @@ class Cancion extends Model
     protected $table = 'canciones';
 
     protected $fillable = [
+        'user_id',
         'title',
         'artist',
         'photo',
@@ -17,4 +18,9 @@ class Cancion extends Model
         'likes',
         'dislikes',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

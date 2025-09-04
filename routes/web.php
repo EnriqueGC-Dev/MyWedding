@@ -9,7 +9,9 @@ Route::get('/', function () {
 });
 
 Route::post('/canciones', [SongController::class, 'store']);
-Route::get('/canciones-list', function() { return \App\Models\Cancion::all();});
+Route::get('/canciones-list', function() {
+    return \App\Models\Cancion::with('user:id,name')->get();
+});
 
 use App\Http\Controllers\UserController;
 Route::post('/signup', [UserController::class, 'signup']);

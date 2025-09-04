@@ -17,7 +17,13 @@ class SongController extends Controller
 			'preview' => 'nullable|string',
 		]);
 
+		$user = $request->user();
+		if (!$user) {
+			return response()->json(['error' => 'No autenticado'], 401);
+		}
+
 		$cancion = Cancion::create([
+			'user_id' => $user->id,
 			'title' => $validated['title'],
 			'artist' => $validated['artist'],
 			'photo' => $validated['photo'] ?? null,
