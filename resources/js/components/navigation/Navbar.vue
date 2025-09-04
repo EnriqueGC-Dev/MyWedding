@@ -13,50 +13,50 @@
     </div>
 
     <!-- Botón de login a la derecha -->
-    <v-btn color="primary" class="login-btn" @click="ToLogin()">Iniciar sesión</v-btn>
+  <v-btn v-if="!this.$store.getters.isUserLogged"color="primary" class="login-btn" @click="showLoginDialog = true">Iniciar sesión</v-btn>
+  <v-btn v-if="this.$store.getters.isUserLogged" color="primary" class="login-btn" @click="logout()">Cerrar sesión</v-btn>
+  
+  <Login 
+  v-model="showLoginDialog"
+  @cancel="showLoginDialog = false"/>
+
   </v-app-bar>
-    ToLogin: function () {
-      this.$router.push('/login').catch(() => {});
-    },
 </template>
 
 <script>
+import Login from '../dialogs/Login.vue';
 
 export default {
-
+  components: { Login },
   data() {
-      return {
-      };
+    return {
+      showLoginDialog: false
+    };
   },
-
   methods: {
-    ToInicio: function () {
+    ToInicio() {
       this.$router.push('/inicio').catch(() => {});
     },
-
-    ToInfo: function () {
+    ToInfo() {
       this.$router.push('/informacion-util').catch(() => {});
     },
-
-    ToMusica: function () {
+    ToMusica() {
       this.$router.push('/musica').catch(() => {});
     },
-
-    ToFotos: function () {
+    ToFotos() {
       this.$router.push('/fotos').catch(() => {});
     },
-
-    ToConfirmacion: function () {
+    ToConfirmacion() {
       this.$router.push('/confirmacion-asistencia').catch(() => {});
     },
-
-    OpenCloseNavbar: function () {
+    OpenCloseNavbar() {
       this.$emit('OpenCloseNavbar');
+    },
+    logout() {
+      this.$store.dispatch("setLogout");
     }
   }
-  
 }
-  
 </script>
 <style scoped>
 .navbar-logo {
@@ -73,8 +73,6 @@ export default {
 .login-btn {
   position: absolute;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
   margin-right: 16px;
 }
 </style>
