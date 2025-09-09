@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->longText('preview')->nullable();
             $table->unsignedInteger('likes')->default(0);
             $table->unsignedInteger('dislikes')->default(0);
+            $table->json('user_like')->nullable();
+            $table->json('user_dislike')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

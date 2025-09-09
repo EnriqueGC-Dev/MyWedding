@@ -17,6 +17,13 @@ class Cancion extends Model
         'preview',
         'likes',
         'dislikes',
+        'user_like',
+        'user_dislike',
+    ];
+
+    protected $casts = [
+        'user_like' => 'array',
+        'user_dislike' => 'array',
     ];
 
     public function user()

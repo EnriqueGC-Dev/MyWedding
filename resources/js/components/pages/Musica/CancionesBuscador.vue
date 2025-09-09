@@ -1,6 +1,8 @@
 <template>
   <div class="d-flex flex-column align-center justify-center" style="margin-top: 32px;">
+    <span style="color: red; font-weight: bold;" v-if="!this.$store.getters.isUserLogged">INICIA SESIÓN PARA PODER AÑADIR Y VOTAR LAS CANCIONES</span>
     <v-text-field
+      v-if="this.$store.getters.isUserLogged"
       v-model="search"
       label="Buscar canción"
       outlined
@@ -40,6 +42,7 @@
     </div>
     <div v-if="selectedTrack && !selectedTrack.preview" style="color: #888; margin-bottom: 16px;">Esta canción no tiene preview disponible.</div>
     <v-btn
+      v-if="this.$store.getters.isUserLogged"
       color="purple darken-4"
       class="ma-2"
       style="width: 200px;"

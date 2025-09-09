@@ -62,8 +62,8 @@ export default {
     data(){
         return{
             viewPage: 'login',
-            email: '',
-            password: '',
+            email: 'a@a.es',
+            password: '123456',
             name: '',
         }
     },

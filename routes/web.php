@@ -8,7 +8,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/canciones', [SongController::class, 'store']);
+Route::middleware('auth')->group(function () {
+    Route::post('/canciones', [SongController::class, 'store']);
+    Route::post('/canciones/{id}/vote', [SongController::class, 'vote']);
+});
 Route::get('/canciones-list', function() {
     return \App\Models\Cancion::with('user:id,name')->get();
 });
