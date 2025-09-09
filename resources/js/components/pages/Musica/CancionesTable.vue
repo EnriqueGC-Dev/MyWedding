@@ -10,7 +10,7 @@
       dense
     />
     <v-list v-if="sortedSongs.length" class="w-100 w-md-75 w-lg-50 mx-auto" style="max-width: 700px;">
-      <v-list-item v-for="song in sortedSongs" :key="song.id" class="flex-column flex-md-row align-center">
+      <v-list-item v-for="song in songsPage" :key="song.id" class="flex-column flex-md-row align-center">
         <template #prepend>
           <v-avatar size="48">
             <img :src="song.photo" alt="cover" />
@@ -33,6 +33,13 @@
           <span style="margin-left: 4px; color: #EF4444; font-size: 30px;">{{ song.dislikes }}</span>
         </template>
       </v-list-item>
+      <v-btn text icon class="ml-2" @click="this.currentPage=1"><v-icon>mdi-skip-previous-outline</v-icon></v-btn>
+      <v-btn text icon class="mr-2" @click="changePage(-1)"><v-icon>mdi-chevron-left</v-icon></v-btn> 
+      <span>{{ currentPage }}</span>
+      <v-btn text icon class="ml-2" @click="changePage(1)"><v-icon>mdi-chevron-right</v-icon></v-btn>
+      <v-btn text icon class="ml-2" @click="lastPage()"><v-icon>mdi-skip-next-outline</v-icon></v-btn>
+
+      
   </v-list>
   <div v-else class="text-center my-4">No hay canciones añadidas aún.</div>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="2000">
@@ -47,10 +54,15 @@ export default {
   data() {
     return {
       songs: [],
+      songsPage: [],
       audio: null,
       refreshInterval: null,
       userId: null,
       sortBy: 'likes',
+      currentPage: 1,
+      itemsPerPage: 5,
+      start: 0,
+      end: 5,
       sortOptions: [
         { title: 'Más popular', value: 'likes' },
         { title: 'Orden alfabético', value: 'alphabetical' },
@@ -100,10 +112,11 @@ export default {
   async mounted() {
     await this.fetchUser();
     this.fetchSongs();
-    this.refreshInterval = setInterval(async () => {
+        this.refreshInterval = setInterval(async () => {
       await this.fetchUser();
       this.fetchSongs();
-    }, 5000);
+    }, 500);
+
   },
   beforeUnmount() {
     if (this.refreshInterval) clearInterval(this.refreshInterval);
@@ -131,6 +144,7 @@ export default {
         const response = await fetch('/canciones-list', { credentials: 'include' });
         if (!response.ok) throw new Error('Error al cargar las canciones');
         this.songs = await response.json();
+        this.changePage(0); // Actualiza la página actual
       } catch (e) {
         this.songs = [];
       }
@@ -212,6 +226,24 @@ export default {
       this.snackbar.color = color;
       this.snackbar.show = true;
     },
+
+    changePage(value) {
+      const totalPages = Math.ceil(this.sortedSongs.length / this.itemsPerPage);
+      this.currentPage += value;
+      if (this.currentPage < 1) this.currentPage = 1;
+      if (this.currentPage > totalPages) this.currentPage = totalPages;
+      this.start = (this.currentPage - 1) * this.itemsPerPage;
+      this.end = this.start + this.itemsPerPage;
+      this.songsPage = this.sortedSongs.slice(this.start, this.end);      
+    },
+
+    lastPage() {
+      const totalPages = Math.ceil(this.sortedSongs.length / this.itemsPerPage);
+      this.currentPage = totalPages;
+      this.start = (this.currentPage - 1) * this.itemsPerPage;
+      this.end = this.start + this.itemsPerPage;
+      this.songsPage = this.sortedSongs.slice(this.start, this.end);      
+    }
   }
 }
 </script>
