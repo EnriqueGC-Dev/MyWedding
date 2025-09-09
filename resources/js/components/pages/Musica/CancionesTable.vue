@@ -1,8 +1,16 @@
 <template>
   <div>
     <h2 class="my-4">Canciones añadidas</h2>
-  <v-list v-if="songs.length" class="w-100 w-md-75 w-lg-50 mx-auto" style="max-width: 700px;">
-  <v-list-item v-for="song in songs" :key="song.id" class="flex-column flex-md-row align-center">
+    <v-select
+      v-model="sortBy"
+      :items="sortOptions"
+      label="Ordenar por"
+      class="mb-4 w-100 w-md-50 w-lg-25 mx-auto"
+      hide-details
+      dense
+    />
+    <v-list v-if="sortedSongs.length" class="w-100 w-md-75 w-lg-50 mx-auto" style="max-width: 700px;">
+      <v-list-item v-for="song in sortedSongs" :key="song.id" class="flex-column flex-md-row align-center">
         <template #prepend>
           <v-avatar size="48">
             <img :src="song.photo" alt="cover" />
@@ -25,8 +33,8 @@
           <span style="margin-left: 4px; color: #EF4444; font-size: 30px;">{{ song.dislikes }}</span>
         </template>
       </v-list-item>
-    </v-list>
-    <div v-else class="text-center my-4">No hay canciones añadidas aún.</div>
+  </v-list>
+  <div v-else class="text-center my-4">No hay canciones añadidas aún.</div>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="2000">
       {{ snackbar.text }}
     </v-snackbar>
@@ -42,11 +50,36 @@ export default {
       audio: null,
       refreshInterval: null,
       userId: null,
+      sortBy: 'likes',
+      sortOptions: [
+        { title: 'Más popular', value: 'likes' },
+        { title: 'Orden alfabético', value: 'alphabetical' },
+        { title: 'Añadidas más antiguas', value: 'oldest' },
+        { title: 'Añadidas más recientes', value: 'newest' }
+      ],
       snackbar: {
         show: false,
         text: '',
         color: 'primary'
       }
+    }
+  },
+  computed: {
+    sortedSongs() {
+      let arr = [...this.songs];
+      if (this.sortBy === 'likes') {
+        arr.sort((a, b) => {
+          if (b.likes !== a.likes) return b.likes - a.likes;
+          return a.dislikes - b.dislikes;
+        });
+      } else if (this.sortBy === 'alphabetical') {
+        arr.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (this.sortBy === 'oldest') {
+        arr.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      } else if (this.sortBy === 'newest') {
+        arr.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      }
+      return arr;
     }
   },
   watch: {
@@ -104,13 +137,24 @@ export default {
     },
     playPreview(song) {
       if (song.preview) {
+        // Validar que la URL sea reproducible (formato soportado)
+        const audioTest = document.createElement('audio');
+        const canPlay = audioTest.canPlayType('audio/mpeg') || audioTest.canPlayType('audio/mp3') || audioTest.canPlayType('audio/ogg');
+        if (!canPlay) {
+          this.showSnackbar('Tu navegador no soporta la reproducción de este formato.', 'red');
+          return;
+        }
         if (!this.audio) {
           this.audio = new Audio();
         } else {
           this.audio.pause();
         }
         this.audio.src = song.preview;
-        this.audio.play();
+        this.audio.play().catch(() => {
+          this.showSnackbar('No se pudo reproducir el preview. Formato o URL no soportada.', 'red');
+        });
+      } else {
+        this.showSnackbar('Esta canción no tiene preview disponible.', 'red');
       }
     },
     userLiked(song) {
