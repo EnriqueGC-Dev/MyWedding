@@ -6,38 +6,42 @@
       :items="sortOptions"
       label="Ordenar por"
       class="mb-4 w-100 w-md-50 w-lg-25 mx-auto"
+      style="background-color: #EEE;"
       hide-details
       dense
     />
-    <v-list v-if="sortedSongs.length" class="w-100 w-md-75 w-lg-50 mx-auto" style="max-width: 700px;">
-      <v-list-item v-for="song in songsPage" :key="song.id" class="flex-column flex-md-row align-center">
-        <template #prepend>
-          <v-avatar size="48">
-            <img :src="song.photo" alt="cover" />
-          </v-avatar>
-        </template>
-        <v-list-item-title>{{ song.title }}</v-list-item-title>
-        <v-list-item-subtitle>
-          {{ song.artist }}
-          <span v-if="song.user && song.user.name" class="ms-2 text-caption text-grey-darken-1">— Añadida por: {{ song.user.name }}</span>
-        </v-list-item-subtitle>
-        <template #append>
-          <v-btn icon @click.stop="playPreview(song)"><v-icon>mdi-play-circle</v-icon></v-btn>
-          <v-btn flat icon class="ma-2" :color="userLiked(song) ? 'deep-purple-accent-4' : ''" @click.stop="vote(song, 'like')">
-            <span style="font-size: 1.5em;">👍</span>
-          </v-btn>
-          <span style="margin-left: 4px; color: #8B5CF6; font-size: 30px;">{{ song.likes }}</span>
-          <v-btn flat icon class="ma-2" :color="userDisliked(song) ? 'red-darken-2' : ''" @click.stop="vote(song, 'dislike')">
-            <span style="font-size: 1.5em;">👎</span>
-          </v-btn>
-          <span style="margin-left: 4px; color: #EF4444; font-size: 30px;">{{ song.dislikes }}</span>
-        </template>
-      </v-list-item>
-      <v-btn text icon class="ml-2" @click="currentPage=1"><v-icon>mdi-skip-previous-outline</v-icon></v-btn>
-      <v-btn text icon class="mr-2" @click="changePage(-1)"><v-icon>mdi-chevron-left</v-icon></v-btn> 
-      <span>{{ currentPage }}</span>
-      <v-btn text icon class="ml-2" @click="changePage(1)"><v-icon>mdi-chevron-right</v-icon></v-btn>
-      <v-btn text icon class="ml-2" @click="lastPage()"><v-icon>mdi-skip-next-outline</v-icon></v-btn>
+    <v-list v-if="sortedSongs.length" class="w-100 w-md-75 w-lg-50 mx-auto mb-6" style="max-width: 700px; background-color: #EEE;">
+      <template v-for="(song, idx) in songsPage" :key="song.id">
+        <v-list-item class="flex-column flex-md-row align-center">
+          <template #prepend>
+            <v-avatar size="48">
+              <img :src="song.photo" alt="cover" />
+            </v-avatar>
+          </template>
+          <v-list-item-title>{{ song.title }}</v-list-item-title>
+          <v-list-item-subtitle>
+            {{ song.artist }}
+            <span v-if="song.user && song.user.name" class="ms-2 text-caption text-grey-darken-1">— Añadida por: {{ song.user.name }}</span>
+          </v-list-item-subtitle>
+          <template #append>
+            <v-btn icon @click.stop="playPreview(song)"><v-icon>mdi-play-circle</v-icon></v-btn>
+            <v-btn flat icon class="ma-2" :color="userLiked(song) ? 'deep-purple-accent-4' : ''" @click.stop="vote(song, 'like')">
+              <span style="font-size: 1.5em;">👍</span>
+            </v-btn>
+            <span style="margin-left: 4px; color: #8B5CF6; font-size: 30px;">{{ song.likes }}</span>
+            <v-btn flat icon class="ma-2" :color="userDisliked(song) ? 'red-darken-2' : ''" @click.stop="vote(song, 'dislike')">
+              <span style="font-size: 1.5em;">👎</span>
+            </v-btn>
+            <span style="margin-left: 4px; color: #EF4444; font-size: 30px;">{{ song.dislikes }}</span>
+          </template>
+        </v-list-item>
+        <v-divider v-if="idx < songsPage.length - 1" class="my-1" />
+      </template>
+      <v-btn text icon class="mx-2" @click="currentPage=1"><v-icon>mdi-skip-previous-outline</v-icon></v-btn>
+      <v-btn text icon class="mx-2" @click="changePage(-1)"><v-icon>mdi-chevron-left</v-icon></v-btn> 
+      <span class="mx-2" style="font-size: 18px; vertical-align: middle;">{{ currentPage }}</span>
+      <v-btn text icon class="mx-2" @click="changePage(1)"><v-icon>mdi-chevron-right</v-icon></v-btn>
+      <v-btn text icon class="mx-2" @click="lastPage()"><v-icon>mdi-skip-next-outline</v-icon></v-btn>
 
       
   </v-list>

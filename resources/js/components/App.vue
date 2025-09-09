@@ -1,10 +1,10 @@
 <template>
-    <v-app class="bg-grey-lighten-3">
+  <v-app >
       <Navbar @OpenCloseNavbar="OpenCloseNavbar"></Navbar>
       <Sidebar v-model="vShowNavbar"></Sidebar>
 
       <v-main class="d-flex align-center justify-center">
-        <router-view :key="$route.fullPath"></router-view>
+        <router-view :key="$route.fullPath" class="app-background"></router-view>
       </v-main>
 
     </v-app>
@@ -28,4 +28,15 @@ export default {
   
 }
   
-</script>
+ </script>
+
+<style>
+.app-background {
+  background-image: url('/images/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100%;
+  width: 100%;
+}
+</style>
