@@ -17,15 +17,34 @@
 
         <CancionesBuscador />
 
-        <CancionesTable />
+    <CancionesTable_Desktop v-if="!isMobile" />
+    <CancionesTable_Mobile v-else />
     </div>
 </template>
 
 <script>
 import CancionesBuscador from './Musica/CancionesBuscador.vue';
-import CancionesTable from './Musica/CancionesTable.vue';
+import CancionesTable_Desktop from './Musica/CancionesTable_Desktop.vue';
+import CancionesTable_Mobile from './Musica/CancionesTable_Mobile.vue';
 
 export default {
-    components: { CancionesBuscador, CancionesTable }
+    components: { CancionesBuscador, CancionesTable_Desktop, CancionesTable_Mobile },
+    data() {
+        return {
+            isMobile: false
+        }
+    },
+    mounted() {
+        this.checkMobile();
+        window.addEventListener('resize', this.checkMobile);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.checkMobile);
+    },
+    methods: {
+        checkMobile() {
+            this.isMobile = window.innerWidth <= 600;
+        }
+    }
 }
 </script>

@@ -1,47 +1,49 @@
 <template>
   <div>
-    <h2 class="my-4">Canciones añadidas</h2>
+    <h2 class="my-4 text-center">Canciones añadidas</h2>
     <v-select
       v-model="sortBy"
       :items="sortOptions"
       label="Ordenar por"
-      class="mb-4 w-100 w-md-50 w-lg-25 mx-auto"
+      class="mb-4 w-100"
       hide-details
       dense
     />
-    <v-list v-if="sortedSongs.length" class="w-100 w-md-75 w-lg-50 mx-auto" style="max-width: 700px;">
-      <v-list-item v-for="song in songsPage" :key="song.id" class="flex-column flex-md-row align-center">
-        <template #prepend>
-          <v-avatar size="48">
+    <v-list v-if="sortedSongs.length" class="w-100" style="max-width:100vw;">
+      <v-list-item v-for="song in songsPage" :key="song.id" class="flex-column align-start py-2 px-1">
+        <div class="d-flex align-center w-100">
+          <v-avatar size="40" class="mr-2">
             <img :src="song.photo" alt="cover" />
           </v-avatar>
-        </template>
-        <v-list-item-title>{{ song.title }}</v-list-item-title>
-        <v-list-item-subtitle>
-          {{ song.artist }}
-          <span v-if="song.user && song.user.name" class="ms-2 text-caption text-grey-darken-1">— Añadida por: {{ song.user.name }}</span>
-        </v-list-item-subtitle>
-        <template #append>
+          <div class="flex-grow-1">
+            <div class="font-weight-bold" style="font-size:1.1em;">{{ song.title }}</div>
+            <div class="text-caption grey--text">{{ song.artist }}<span v-if="song.user && song.user.name"> — Añadida por: {{ song.user.name }}</span></div>
+          </div>
           <v-btn icon @click.stop="playPreview(song)"><v-icon>mdi-play-circle</v-icon></v-btn>
-          <v-btn flat icon class="ma-2" :color="userLiked(song) ? 'deep-purple-accent-4' : ''" @click.stop="vote(song, 'like')">
-            <span style="font-size: 1.5em;">👍</span>
-          </v-btn>
-          <span style="margin-left: 4px; color: #8B5CF6; font-size: 30px;">{{ song.likes }}</span>
-          <v-btn flat icon class="ma-2" :color="userDisliked(song) ? 'red-darken-2' : ''" @click.stop="vote(song, 'dislike')">
-            <span style="font-size: 1.5em;">👎</span>
-          </v-btn>
-          <span style="margin-left: 4px; color: #EF4444; font-size: 30px;">{{ song.dislikes }}</span>
-        </template>
+        </div>
+        <div class="d-flex align-center mt-1 w-100 justify-space-between">
+          <div>
+            <v-btn flat icon :color="userLiked(song) ? 'deep-purple-accent-4' : ''" @click.stop="vote(song, 'like')">
+              <span style="font-size: 1.3em;">👍</span>
+            </v-btn>
+            <span style="margin-left: 2px; color: #8B5CF6; font-size: 1.2em;">{{ song.likes }}</span>
+            <v-btn flat icon :color="userDisliked(song) ? 'red-darken-2' : ''" @click.stop="vote(song, 'dislike')">
+              <span style="font-size: 1.3em;">👎</span>
+            </v-btn>
+            <span style="margin-left: 2px; color: #EF4444; font-size: 1.2em;">{{ song.dislikes }}</span>
+          </div>
+          
+        </div>
       </v-list-item>
-      <v-btn text icon class="ml-2" @click="this.currentPage=1"><v-icon>mdi-skip-previous-outline</v-icon></v-btn>
-      <v-btn text icon class="mr-2" @click="changePage(-1)"><v-icon>mdi-chevron-left</v-icon></v-btn> 
-      <span>{{ currentPage }}</span>
-      <v-btn text icon class="ml-2" @click="changePage(1)"><v-icon>mdi-chevron-right</v-icon></v-btn>
-      <v-btn text icon class="ml-2" @click="lastPage()"><v-icon>mdi-skip-next-outline</v-icon></v-btn>
-
-      
-  </v-list>
-  <div v-else class="text-center my-4">No hay canciones añadidas aún.</div>
+      <div>
+            <v-btn text icon @click="currentPage=1"><v-icon>mdi-skip-previous-outline</v-icon></v-btn>
+            <v-btn text icon @click="changePage(-1)"><v-icon>mdi-chevron-left</v-icon></v-btn>
+            <span>{{ currentPage }}</span>
+            <v-btn text icon @click="changePage(1)"><v-icon>mdi-chevron-right</v-icon></v-btn>
+            <v-btn text icon @click="lastPage()"><v-icon>mdi-skip-next-outline</v-icon></v-btn>
+          </div>
+    </v-list>
+    <div v-else class="text-center my-4">No hay canciones añadidas aún.</div>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="2000">
       {{ snackbar.text }}
     </v-snackbar>
@@ -96,12 +98,10 @@ export default {
   },
   watch: {
     userId(val, oldVal) {
-      // Si el usuario cierra sesión o inicia sesión, refresca la lista para actualizar los colores
       if ((!val && oldVal) || (val && !oldVal)) {
         this.fetchSongs();
       }
     },
-    // Si el usuario cierra sesión desde fuera, limpiar userId y refrescar
     '$store.getters.isUserLogged'(val) {
       if (!val) {
         this.userId = null;
@@ -112,11 +112,10 @@ export default {
   async mounted() {
     await this.fetchUser();
     this.fetchSongs();
-        this.refreshInterval = setInterval(async () => {
+    this.refreshInterval = setInterval(async () => {
       await this.fetchUser();
       this.fetchSongs();
-    }, 500);
-
+    }, 2000);
   },
   beforeUnmount() {
     if (this.refreshInterval) clearInterval(this.refreshInterval);
@@ -124,7 +123,6 @@ export default {
   methods: {
     async fetchUser() {
       try {
-        // Intenta obtener el id del usuario desde el store o desde la API
         let id = null;
         if (this.$store && this.$store.getters && this.$store.getters.user_id) {
           id = this.$store.getters.user_id;
@@ -135,7 +133,6 @@ export default {
         this.userId = id !== null ? Number(id) : null;
       } catch {
         this.userId = null;
-        // Si ocurre error (por ejemplo, tras logout), refresca canciones para limpiar colores
         this.fetchSongs();
       }
     },
@@ -144,14 +141,13 @@ export default {
         const response = await fetch('/canciones-list', { credentials: 'include' });
         if (!response.ok) throw new Error('Error al cargar las canciones');
         this.songs = await response.json();
-        this.changePage(0); // Actualiza la página actual
+        this.changePage(0);
       } catch (e) {
         this.songs = [];
       }
     },
     playPreview(song) {
       if (song.preview) {
-        // Validar que la URL sea reproducible (formato soportado)
         const audioTest = document.createElement('audio');
         const canPlay = audioTest.canPlayType('audio/mpeg') || audioTest.canPlayType('audio/mp3') || audioTest.canPlayType('audio/ogg');
         if (!canPlay) {
@@ -173,7 +169,6 @@ export default {
     },
     userLiked(song) {
       if (!song.user_like || !this.userId) return false;
-      // Asegura que ambos sean del mismo tipo (número)
       return song.user_like.map(Number).includes(Number(this.userId));
     },
     userDisliked(song) {
@@ -226,7 +221,6 @@ export default {
       this.snackbar.color = color;
       this.snackbar.show = true;
     },
-
     changePage(value) {
       const totalPages = Math.ceil(this.sortedSongs.length / this.itemsPerPage);
       this.currentPage += value;
@@ -236,7 +230,6 @@ export default {
       this.end = this.start + this.itemsPerPage;
       this.songsPage = this.sortedSongs.slice(this.start, this.end);      
     },
-
     lastPage() {
       const totalPages = Math.ceil(this.sortedSongs.length / this.itemsPerPage);
       this.currentPage = totalPages;
