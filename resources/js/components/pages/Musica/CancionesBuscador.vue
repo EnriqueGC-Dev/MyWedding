@@ -127,6 +127,7 @@ export default {
               'Accept': 'application/json',
               'X-CSRF-TOKEN': token || ''
             },
+            credentials: 'include',
             body: JSON.stringify(payload)
           });
           if (!response.ok) throw new Error('Error al guardar la canción');

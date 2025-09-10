@@ -2,7 +2,7 @@
     <v-container class="d-flex justify-center align-center" style="min-height: 80vh; min-width: 100%;">
         <v-card class="pa-6" max-width="500" elevation="10" style="width:100%;">
             <v-card-title class="text-h5 font-weight-bold mb-2 text-center">Confirmación de Asistencia</v-card-title>
-            <v-form @submit.prevent="submitForm" ref="form">
+            <v-form @submit.prevent="submitForm" ref="form" v-model="formValid">
                 <v-text-field
                     v-model="nombre"
                     label="Nombre Invitado"
@@ -36,6 +36,15 @@
                             class="flex-grow-1 mt-4"
                             required
                         />
+                        <v-switch
+                            v-model="niños[idx]"
+                            :label="`Niño/a`"
+                            outlined
+                            dense
+                            class="ml-4 mt-4"
+                            true-value="Sí"
+                            false-value="No"
+                        />
                         <v-btn icon small color="red" @click="removeInvitado(idx)" class="ml-2">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
@@ -49,7 +58,7 @@
                     rows="2"
                     class="mb-4"
                 />
-                <v-btn color="deep-purple-accent-4" block large type="submit" class="mt-2 text-white">Confirmar</v-btn>
+                <v-btn color="deep-purple-accent-4" block large type="submit" class="mt-2 text-white" :disabled="!formValid">Confirmar</v-btn>
             </v-form>
         </v-card>
     </v-container>
@@ -61,12 +70,16 @@ export default {
             nombre: '',
             telefono: '',
             invitados: [],
+            niños: [],
             restricciones: '',
+            formValid: false,
         };
     },
     methods: {
         addInvitado() {
-            if (this.invitados.length < 5) this.invitados.push('');
+            if (this.invitados.length < 5) 
+            this.invitados.push('');
+            this.niños.push('No');
         },
         removeInvitado(idx) {
             this.invitados.splice(idx, 1);
@@ -74,6 +87,10 @@ export default {
         submitForm() {
             // Aquí puedes manejar el envío del formulario
             // Por ejemplo, emitir un evento o hacer una petición AJAX
+            console.log('Nombre:', this.nombre);
+            console.log('Teléfono:', this.telefono);    
+            console.log('Invitados:', this.invitados);
+            console.log('Niños:', this.niños);
             alert('Formulario enviado');
         },
     },

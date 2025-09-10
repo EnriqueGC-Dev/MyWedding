@@ -119,7 +119,7 @@ export default {
         this.refreshInterval = setInterval(async () => {
       await this.fetchUser();
       this.fetchSongs();
-    }, 500);
+    }, 50000);
 
   },
   beforeUnmount() {
