@@ -8,6 +8,7 @@
                     label="Nombre Invitado"
                     outlined
                     dense
+                    :rules="[v => !!v || 'El nombre es obligatorio']"
                     required
                     class="mb-3"
                 />
@@ -16,6 +17,7 @@
                     label="Teléfono"
                     outlined
                     dense
+                    :rules="[v => !!v || 'El teléfono es obligatorio', v => /^\d{9,15}$/.test(v) || 'Introduce un teléfono válido']"
                     required
                     class="mb-3"
                     type="tel"
@@ -42,8 +44,6 @@
                             outlined
                             dense
                             class="ml-4 mt-4"
-                            true-value="Sí"
-                            false-value="No"
                         />
                         <v-btn icon small color="red" @click="removeInvitado(idx)" class="ml-2">
                             <v-icon>mdi-close</v-icon>
@@ -58,7 +58,7 @@
                     rows="2"
                     class="mb-4"
                 />
-                <v-btn color="deep-purple-accent-4" block large type="submit" class="mt-2 text-white" :disabled="!formValid">Confirmar</v-btn>
+                <v-btn color="deep-purple-accent-4" block large type="submit" class="mt-2 text-white" :disabled="!isFormReallyValid">Confirmar</v-btn>
             </v-form>
         </v-card>
     </v-container>
@@ -75,27 +75,67 @@ export default {
             formValid: false,
         };
     },
+    computed: {
+        isFormReallyValid() {
+            if (!this.formValid) return false;
+            if (!this.nombre || !this.telefono) return false;
+            if (this.invitados.some(i => !i)) return false;
+            return true;
+        }
+    },
     methods: {
         addInvitado() {
-            if (this.invitados.length < 5) 
-            this.invitados.push('');
-            this.niños.push('No');
+            if (this.invitados.length < 5) {
+                this.invitados.push('');
+                this.niños.push(false);
+            }
         },
         removeInvitado(idx) {
             this.invitados.splice(idx, 1);
+            this.niños.splice(idx, 1);
         },
         submitForm() {
-            // Aquí puedes manejar el envío del formulario
-            // Por ejemplo, emitir un evento o hacer una petición AJAX
-            console.log('Nombre:', this.nombre);
-            console.log('Teléfono:', this.telefono);    
-            console.log('Invitados:', this.invitados);
-            console.log('Niños:', this.niños);
-            alert('Formulario enviado');
+            // Obtén el token CSRF desde la meta etiqueta
+            const token = document.head.querySelector('meta[name="csrf-token"]').content;
+            const data = {
+                nombre: this.nombre,
+                telefono: this.telefono,
+                invitados: this.invitados,
+                ninos: this.niños,
+                restricciones: this.restricciones
+            };
+            fetch('/invitados', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(data)
+            })
+            .then(async response => {
+                if (!response.ok) {
+                    const error = await response.json();
+                    alert('Error al enviar: ' + (error.message || response.status));
+                    return;
+                }
+                alert('¡Confirmación enviada!');
+                // Opcional: limpiar el formulario
+                this.nombre = '';
+                this.telefono = '';
+                this.invitados = [];
+                this.niños = [];
+                this.restricciones = '';
+            })
+            .catch(() => {
+                alert('Error de red o servidor.');
+            });
         },
     },
 };
 </script>
+
 <style scoped>
 .v-card {
     border-radius: 18px;
