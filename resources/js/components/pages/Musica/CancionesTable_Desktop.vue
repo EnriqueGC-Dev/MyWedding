@@ -37,7 +37,7 @@
         </v-list-item>
         <v-divider v-if="idx < songsPage.length - 1" class="my-1" />
       </template>
-      <v-btn text icon class="mx-2" @click="currentPage=1"><v-icon>mdi-skip-previous-outline</v-icon></v-btn>
+      <v-btn text icon class="mx-2" @click="firstPage()"><v-icon>mdi-skip-previous-outline</v-icon></v-btn>
       <v-btn text icon class="mx-2" @click="changePage(-1)"><v-icon>mdi-chevron-left</v-icon></v-btn> 
       <span class="mx-2" style="font-size: 18px; vertical-align: middle;">{{ currentPage }}</span>
       <v-btn text icon class="mx-2" @click="changePage(1)"><v-icon>mdi-chevron-right</v-icon></v-btn>
@@ -236,6 +236,14 @@ export default {
       this.currentPage += value;
       if (this.currentPage < 1) this.currentPage = 1;
       if (this.currentPage > totalPages) this.currentPage = totalPages;
+      this.start = (this.currentPage - 1) * this.itemsPerPage;
+      this.end = this.start + this.itemsPerPage;
+      this.songsPage = this.sortedSongs.slice(this.start, this.end);      
+    },
+
+    firstPage() {
+      const totalPages = Math.ceil(this.sortedSongs.length / this.itemsPerPage);
+      this.currentPage = 1;
       this.start = (this.currentPage - 1) * this.itemsPerPage;
       this.end = this.start + this.itemsPerPage;
       this.songsPage = this.sortedSongs.slice(this.start, this.end);      

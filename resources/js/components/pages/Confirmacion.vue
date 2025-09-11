@@ -1,7 +1,9 @@
 <template>
     <v-container class="d-flex justify-center align-center" style="min-height: 80vh; min-width: 100%;">
-        <v-card class="pa-6" max-width="500" elevation="10" style="width:100%;">
+        <v-card class="pa-6" max-width="700" elevation="10" style="width:100%;">
             <v-card-title class="text-h5 font-weight-bold mb-2 text-center">Confirmación de Asistencia</v-card-title>
+            <div class="text-h7 font-weight-bold mb-2 text-center">Podéis utilizar este formulario para confirmar vuestra asistencia a la boda.</div>
+            <div class="text-h7 font-weight-bold mb-2 text-center">Si teneis acompañantes o familia, indicad los nombres de todos los que asistirán.</div>
             <v-form @submit.prevent="submitForm" ref="form" v-model="formValid">
                 <v-text-field
                     v-model="nombre"
@@ -58,10 +60,21 @@
                     rows="2"
                     class="mb-4"
                 />
-                <v-btn color="deep-purple-accent-4" block large type="submit" class="mt-2 text-white" :disabled="!isFormReallyValid">Confirmar</v-btn>
+                <v-row>
+                    <v-spacer></v-spacer>
+                <v-btn
+                    large
+                    type="submit"
+                    class="mt-2 text-white confirm-btn-bg"
+                    :disabled="!isFormReallyValid"
+                >
+                    Confirmar
+                </v-btn>
+                </v-row>
             </v-form>
         </v-card>
     </v-container>
+
 </template>
 <script>
 export default {
@@ -142,4 +155,15 @@ export default {
     background: rgba(255,255,255,0.95);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
+
+.confirm-btn-bg {
+    background-image: url('/images/btn-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff !important;
+    border: none;
+    box-shadow: 0 2px 8px rgba(56,178,172,0.10);
+}
 </style>
+

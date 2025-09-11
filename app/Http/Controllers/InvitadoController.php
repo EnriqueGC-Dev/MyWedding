@@ -1,9 +1,15 @@
 <?php
 
+
 namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Http\Request;
 use App\Models\Invitado;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\InvitadoConfirmadoNotification;
+
 
 class InvitadoController extends Controller
 {
@@ -37,6 +43,15 @@ class InvitadoController extends Controller
             'restricciones' => $validated['restricciones'] ?? null,
         ]);
 
+
+    // Enviar email personalizado (a un correo fijo de organización) usando blade
+    Mail::send('emails.confirmacion', ['invitado' => $invitado], function ($message) {
+        $message->to('gc91.enrique@gmail.com')
+            ->subject('Nueva confirmación de asistencia');
+    });
+
         return response()->json(['success' => true, 'invitado' => $invitado]);
     }
+
+
 }

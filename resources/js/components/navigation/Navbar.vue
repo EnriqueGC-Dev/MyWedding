@@ -68,6 +68,7 @@ export default {
   margin-left: 18px;
   margin-right: 18px;
   align-self: center;
+  cursor: pointer;
 }
 
 .login-btn {

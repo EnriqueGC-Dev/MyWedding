@@ -14,11 +14,9 @@ let store = createStore({
     },
     mutations: {
         LOGIN: async function (state, callback) {
-            let response = await axios.get("/data");   
+            let response = await axios.get("/data"); 
 
             if (response.data.status == 'OK') {
-                console.log("User is logged in");
-                console.log(response.data);
                 state.authentication = true;
                 state.user_id = response.data.id;
                 state.user_name = response.data.name;

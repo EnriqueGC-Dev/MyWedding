@@ -70,7 +70,6 @@ export default {
 
     methods: {
         login() {
-            console.log("login");
             let Self = this;
         
             let credenciales = {
@@ -100,7 +99,6 @@ export default {
         },
 
         signup() {
-            console.log("signup");
         
             let credenciales = {
                 name: this.name,
@@ -115,7 +113,6 @@ export default {
 
                         this.usuario = response.data[0];
 
-                        console.log('Usuario registrado correctamente');
                         this.login();
                     } else {
                         if(response.data.status == 'ERROR') {
