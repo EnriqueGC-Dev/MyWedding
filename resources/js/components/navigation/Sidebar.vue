@@ -37,11 +37,11 @@
      data () {
       return {
         items: [
-          { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-          { title: 'Account', icon: 'mdi-account-box', action: () => this.$router.push('/account') },
-          { title: 'Settings', icon: 'mdi-cog', action: () => this.$router.push('/settings') },
-          { title: 'Users', icon: 'mdi-account-multiple', action: () => this.$router.push('/users') },
-          { title: 'Admin', icon: 'mdi-gavel' },
+          { title: 'Inicio', icon: 'mdi-view-dashboard', action: () => this.$router.push('/inicio') },
+          { title: 'Información', icon: 'mdi-account-box', action: () => this.$router.push('/informacion-util') },
+          { title: 'Asistencia', icon: 'mdi-cog', action: () => this.$router.push('/confirmacion-asistencia') },
+          { title: 'Musica', icon: 'mdi-account-multiple', action: () => this.$router.push('/musica') },
+          { title: 'Fotos', icon: 'mdi-gavel', action: () => this.$router.push('/fotos') },
         ],
 
       }

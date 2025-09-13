@@ -5,6 +5,7 @@ use App\Http\Controllers\SongController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InvitadoController;
 use App\Http\Controllers\FotosController;
+use App\Http\Controllers\UploadMediaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,7 @@ Route::get('/canciones-list', function() {
 });
 
 Route::get('/media-list', [FotosController::class, 'index']);
+Route::post('/upload-media', UploadMediaController::class)->middleware('auth');
 
 Route::post('/signup', [UserController::class, 'signup']);
 Route::post('/login', [UserController::class, 'login']);

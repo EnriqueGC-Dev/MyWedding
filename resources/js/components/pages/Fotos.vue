@@ -1,6 +1,21 @@
 <template>
             <v-container fluid class="pa-4">
                 <h2 class="mb-6 text-center font-weight-bold">Galería de Fotos y Videos</h2>
+                <div v-if="$store.getters.isUserLogged" class="d-flex justify-center mb-4">
+                    <input
+                        ref="fileInput"
+                        type="file"
+                        :accept="isMobile ? 'image/*,video/*' : 'image/*,video/*'"
+                        :capture="isMobile ? 'environment' : undefined"
+                        multiple
+                        style="display:none"
+                        @change="handleFileUpload"
+                    />
+                    <v-btn color="primary" @click="$refs.fileInput.click()">
+                        <v-icon left>mdi-upload</v-icon>
+                        Subir {{ isMobile ? 'foto/video o hacer foto' : 'fotos o videos' }}
+                    </v-btn>
+                </div>
                 <div v-if="mediaList.length === 0" class="text-center grey--text mt-8">No hay imágenes ni videos para mostrar.</div>
                 <v-simple-table class="media-table" v-else>
                     <tbody>
@@ -127,6 +142,22 @@ export default {
                         this.perPage = 8;
                     } else {
                         this.perPage = 16;
+                    }
+                },
+                async handleFileUpload(e) {
+                    const files = Array.from(e.target.files);
+                    if (!files.length) return;
+                    const formData = new FormData();
+                    files.forEach(f => formData.append('files[]', f));
+                    try {
+                        await axios.post('/upload-media', formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        });
+                        // Recarga la galería tras subir
+                        const res = await axios.get('/media-list');
+                        this.mediaList = res.data;
+                    } catch (err) {
+                        alert('Error al subir archivo(s)');
                     }
                 },
             }
