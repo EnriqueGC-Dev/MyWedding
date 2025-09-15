@@ -30,7 +30,11 @@
         <v-list-item-title>{{ track.title }}</v-list-item-title>
         <v-list-item-subtitle>{{ track.artist.name }}</v-list-item-subtitle>
         <template #append>
-          <v-btn v-if="track.preview" icon @click.stop="playPreview(track)"><v-icon>mdi-play-circle</v-icon></v-btn>
+          <v-btn v-if="track.preview" icon @click.stop="togglePreview(track)">
+            <v-icon>
+              {{ isPlaying(track) ? 'mdi-stop-circle' : 'mdi-play-circle' }}
+            </v-icon>
+          </v-btn>
           <span v-else style="color: #888; font-size: 0.9em;">Sin preview</span>
         </template>
       </v-list-item>
@@ -67,7 +71,8 @@ export default {
       previewUrl: '',
       page: 1,
       pageSize: 5,
-      audio: null,
+  audio: null,
+  playingTrackId: null,
     };
   },
   computed: {
@@ -97,19 +102,41 @@ export default {
       this.selectedTrack = track;
       this.previewUrl = track.preview || '';
     },
-    playPreview(track) {
-      if (track.preview) {
-        if (!this.audio) {
-          this.audio = new Audio();
-        } else {
-          this.audio.pause();
-        }
-        this.audio.src = track.preview;
-        this.audio.play();
+    togglePreview(track) {
+      if (!track.preview) return;
+      if (this.isPlaying(track)) {
+        this.stopPreview();
+      } else {
+        this.playPreview(track);
       }
+    },
+    playPreview(track) {
+      if (!track.preview) return;
+      if (!this.audio) {
+        this.audio = new Audio();
+        this.audio.addEventListener('ended', () => {
+          this.playingTrackId = null;
+        });
+      } else {
+        this.audio.pause();
+      }
+      this.audio.src = track.preview;
+      this.audio.play();
+      this.playingTrackId = track.id;
+    },
+    stopPreview() {
+      if (this.audio) {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+      }
+      this.playingTrackId = null;
+    },
+    isPlaying(track) {
+      return this.playingTrackId === track.id;
     },
     async addTrack() {
       if (this.selectedTrack) {
+        this.stopPreview(); // Detener la música si está sonando
         const payload = {
           title: this.selectedTrack.title,
           artist: this.selectedTrack.artist.name,

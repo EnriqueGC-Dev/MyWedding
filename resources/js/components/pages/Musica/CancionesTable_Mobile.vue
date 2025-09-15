@@ -19,7 +19,9 @@
             <div class="font-weight-bold" style="font-size:1.1em;">{{ song.title }}</div>
             <div class="text-caption grey--text">{{ song.artist }}<span v-if="song.user && song.user.name"> — Añadida por: {{ song.user.name }}</span></div>
           </div>
-          <v-btn icon @click.stop="playPreview(song)"><v-icon>mdi-play-circle</v-icon></v-btn>
+          <v-btn icon @click.stop="togglePreview(song)">
+            <v-icon>{{ isPlaying(song) ? 'mdi-stop-circle' : 'mdi-play-circle' }}</v-icon>
+          </v-btn>
         </div>
         <div class="d-flex align-center mt-1 w-100 justify-space-between">
           <div>
@@ -57,7 +59,8 @@ export default {
     return {
       songs: [],
       songsPage: [],
-      audio: null,
+  audio: null,
+  playingSongId: null,
       refreshInterval: null,
       userId: null,
       sortBy: 'likes',
@@ -146,6 +149,17 @@ export default {
         this.songs = [];
       }
     },
+    togglePreview(song) {
+      if (!song.preview) {
+        this.showSnackbar('Esta canción no tiene preview disponible.', 'red');
+        return;
+      }
+      if (this.isPlaying(song)) {
+        this.stopPreview();
+      } else {
+        this.playPreview(song);
+      }
+    },
     playPreview(song) {
       if (song.preview) {
         const audioTest = document.createElement('audio');
@@ -156,6 +170,9 @@ export default {
         }
         if (!this.audio) {
           this.audio = new Audio();
+          this.audio.addEventListener('ended', () => {
+            this.playingSongId = null;
+          });
         } else {
           this.audio.pause();
         }
@@ -163,9 +180,20 @@ export default {
         this.audio.play().catch(() => {
           this.showSnackbar('No se pudo reproducir el preview. Formato o URL no soportada.', 'red');
         });
+        this.playingSongId = song.id;
       } else {
         this.showSnackbar('Esta canción no tiene preview disponible.', 'red');
       }
+    },
+    stopPreview() {
+      if (this.audio) {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+      }
+      this.playingSongId = null;
+    },
+    isPlaying(song) {
+      return this.playingSongId === song.id;
     },
     userLiked(song) {
       if (!song.user_like || !this.userId) return false;

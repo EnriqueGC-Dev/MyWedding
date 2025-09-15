@@ -24,7 +24,9 @@
             <span v-if="song.user && song.user.name" class="ms-2 text-caption text-grey-darken-1">— Añadida por: {{ song.user.name }}</span>
           </v-list-item-subtitle>
           <template #append>
-            <v-btn icon @click.stop="playPreview(song)"><v-icon>mdi-play-circle</v-icon></v-btn>
+            <v-btn icon @click.stop="togglePreview(song)">
+              <v-icon>{{ isPlaying(song) ? 'mdi-stop-circle' : 'mdi-play-circle' }}</v-icon>
+            </v-btn>
             <v-btn flat icon class="ma-2" :color="userLiked(song) ? 'deep-purple-accent-4' : ''" @click.stop="vote(song, 'like')">
               <span style="font-size: 1.5em;">👍</span>
             </v-btn>
@@ -59,7 +61,8 @@ export default {
     return {
       songs: [],
       songsPage: [],
-      audio: null,
+  audio: null,
+  playingSongId: null,
       refreshInterval: null,
       userId: null,
       sortBy: 'likes',
@@ -153,9 +156,19 @@ export default {
         this.songs = [];
       }
     },
+    togglePreview(song) {
+      if (!song.preview) {
+        this.showSnackbar('Esta canción no tiene preview disponible.', 'red');
+        return;
+      }
+      if (this.isPlaying(song)) {
+        this.stopPreview();
+      } else {
+        this.playPreview(song);
+      }
+    },
     playPreview(song) {
       if (song.preview) {
-        // Validar que la URL sea reproducible (formato soportado)
         const audioTest = document.createElement('audio');
         const canPlay = audioTest.canPlayType('audio/mpeg') || audioTest.canPlayType('audio/mp3') || audioTest.canPlayType('audio/ogg');
         if (!canPlay) {
@@ -164,6 +177,9 @@ export default {
         }
         if (!this.audio) {
           this.audio = new Audio();
+          this.audio.addEventListener('ended', () => {
+            this.playingSongId = null;
+          });
         } else {
           this.audio.pause();
         }
@@ -171,9 +187,20 @@ export default {
         this.audio.play().catch(() => {
           this.showSnackbar('No se pudo reproducir el preview. Formato o URL no soportada.', 'red');
         });
+        this.playingSongId = song.id;
       } else {
         this.showSnackbar('Esta canción no tiene preview disponible.', 'red');
       }
+    },
+    stopPreview() {
+      if (this.audio) {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+      }
+      this.playingSongId = null;
+    },
+    isPlaying(song) {
+      return this.playingSongId === song.id;
     },
     userLiked(song) {
       if (!song.user_like || !this.userId) return false;
