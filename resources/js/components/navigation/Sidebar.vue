@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer style="height: 100vh;"  v-model="vShowNavbar" app permanent class="bg-grey-lighten-3">
-            <v-list density="compact" :elevation="3">
+            <v-list density="compact" :elevation="3" v-if="this.$store.getters.isUserLogged">
               <v-list-item
                   :title=$store.state.user_name
                   :subtitle=$store.state.user_mail>
@@ -37,11 +37,11 @@
      data () {
       return {
         items: [
-          { title: 'Inicio', icon: 'mdi-view-dashboard', action: () => this.$router.push('/inicio') },
-          { title: 'Información', icon: 'mdi-account-box', action: () => this.$router.push('/informacion-util') },
-          { title: 'Asistencia', icon: 'mdi-cog', action: () => this.$router.push('/confirmacion-asistencia') },
-          { title: 'Musica', icon: 'mdi-account-multiple', action: () => this.$router.push('/musica') },
-          { title: 'Fotos', icon: 'mdi-gavel', action: () => this.$router.push('/fotos') },
+          { title: 'Inicio',                icon: 'mdi-home',           action: () => { this.$emit('OpenCloseNavbar'); this.$router.push('/inicio'); } },
+          { title: 'Información Util',      icon: 'mdi-information',    action: () => { this.$emit('OpenCloseNavbar'); this.$router.push('/informacion-util') } },
+          { title: 'Confirmar Asistencia',  icon: 'mdi-check-bold',     action: () => { this.$emit('OpenCloseNavbar'); this.$router.push('/confirmacion-asistencia') } },
+          { title: 'Playlist Musica',       icon: 'mdi-playlist-music', action: () => { this.$emit('OpenCloseNavbar'); this.$router.push('/musica') } },
+          { title: 'Albúm Fotos y Video',   icon: 'mdi-image-multiple', action: () => { this.$emit('OpenCloseNavbar'); this.$router.push('/fotos') } },
         ],
 
       }

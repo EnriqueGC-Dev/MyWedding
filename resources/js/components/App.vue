@@ -1,7 +1,7 @@
 <template>
   <v-app >
       <Navbar @OpenCloseNavbar="OpenCloseNavbar"></Navbar>
-      <Sidebar v-model="vShowNavbar"></Sidebar>
+      <Sidebar @OpenCloseNavbar="OpenCloseNavbar" v-model="vShowNavbar"></Sidebar>
 
       <v-main class="d-flex align-center justify-center">
         <router-view :key="$route.fullPath" class="app-background"></router-view>
