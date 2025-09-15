@@ -15,6 +15,20 @@
                     class="mb-3"
                 />
                 <v-text-field
+                    v-model="bebidaCena"
+                    label="Bebida Cena"
+                    outlined
+                    dense
+                    class="mb-3"
+                />
+                <v-text-field
+                    v-model="bebidaFiesta"
+                    label="Bebida Fiesta"
+                    outlined
+                    dense
+                    class="mb-3"
+                />
+                <v-text-field
                     v-model="telefono"
                     label="Teléfono"
                     outlined
@@ -39,6 +53,20 @@
                             dense
                             class="flex-grow-1 mt-4"
                             required
+                        />
+                        <v-text-field
+                            v-model="bebidasCenaAcompanantes[idx]"
+                            :label="`Bebida Cena`"
+                            outlined
+                            dense
+                            class="ml-2 mt-4"
+                        />
+                        <v-text-field
+                            v-model="bebidasFiestaAcompanantes[idx]"
+                            :label="`Bebida Fiesta`"
+                            outlined
+                            dense
+                            class="ml-2 mt-4"
                         />
                         <v-switch
                             v-model="niños[idx]"
@@ -82,8 +110,12 @@ export default {
         return {
             nombre: '',
             telefono: '',
+            bebidaCena: '',
+            bebidaFiesta: '',
             invitados: [],
             niños: [],
+            bebidasCenaAcompanantes: [],
+            bebidasFiestaAcompanantes: [],
             restricciones: '',
             formValid: false,
         };
@@ -101,11 +133,15 @@ export default {
             if (this.invitados.length < 5) {
                 this.invitados.push('');
                 this.niños.push(false);
+                this.bebidasCenaAcompanantes.push('');
+                this.bebidasFiestaAcompanantes.push('');
             }
         },
         removeInvitado(idx) {
             this.invitados.splice(idx, 1);
             this.niños.splice(idx, 1);
+            this.bebidasCenaAcompanantes.splice(idx, 1);
+            this.bebidasFiestaAcompanantes.splice(idx, 1);
         },
         submitForm() {
             // Obtén el token CSRF desde la meta etiqueta
@@ -113,8 +149,12 @@ export default {
             const data = {
                 nombre: this.nombre,
                 telefono: this.telefono,
+                bebida_cena: this.bebidaCena,
+                bebida_fiesta: this.bebidaFiesta,
                 invitados: this.invitados,
                 ninos: this.niños,
+                bebidas_cena_acompanantes: this.bebidasCenaAcompanantes,
+                bebidas_fiesta_acompanantes: this.bebidasFiestaAcompanantes,
                 restricciones: this.restricciones
             };
             fetch('/invitados', {
@@ -139,6 +179,10 @@ export default {
                 this.telefono = '';
                 this.invitados = [];
                 this.niños = [];
+                this.bebidaCena = '';
+                this.bebidaFiesta = '';
+                this.bebidasCenaAcompanantes = [];
+                this.bebidasFiestaAcompanantes = [];
                 this.restricciones = '';
             })
             .catch(() => {

@@ -104,11 +104,20 @@
         <div class="info">
             <p><strong>Nombre:</strong> {{ $invitado->nombre }}</p>
             <p><strong>Teléfono:</strong> {{ $invitado->telefono }}</p>
+            <p><strong>Bebida Cena:</strong> {{ $invitado->bebida_cena ?? '-' }}</p>
+            <p><strong>Bebida Fiesta:</strong> {{ $invitado->bebida_fiesta ?? '-' }}</p>
             @if (!empty($invitado->invitados_adicionales))
                 <p style="margin-bottom:6px;"><strong>Acompañantes:</strong></p>
                 <ul class="acomp-list">
                     @foreach ($invitado->invitados_adicionales as $a)
-                        <li>👤 {{ $a['nombre'] ?? '-' }} @if(isset($a['nino']) && $a['nino']) <span style="color:#ed8936;">(Niño/a)</span> @endif</li>
+                        <li>
+                            👤 {{ $a['nombre'] ?? '-' }}
+                            @if(isset($a['nino']) && $a['nino']) <span style="color:#ed8936;">(Niño/a)</span> @endif<br>
+                            <span style="margin-left:24px;">
+                                <strong>Bebida Cena:</strong> {{ $a['bebida_cena'] ?? '-' }}<br>
+                                <strong>Bebida Fiesta:</strong> {{ $a['bebida_fiesta'] ?? '-' }}
+                            </span>
+                        </li>
                     @endforeach
                 </ul>
             @endif

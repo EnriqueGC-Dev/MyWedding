@@ -14,6 +14,8 @@ class Invitado extends Model
         'telefono',
         'invitados_adicionales',
         'restricciones',
+        'bebida_cena',
+        'bebida_fiesta',
     ];
 
     protected $casts = [

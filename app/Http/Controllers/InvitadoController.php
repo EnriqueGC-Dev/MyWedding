@@ -18,10 +18,16 @@ class InvitadoController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'telefono' => 'required|string|max:30',
+            'bebida_cena' => 'nullable|string|max:255',
+            'bebida_fiesta' => 'nullable|string|max:255',
             'invitados' => 'nullable|array|max:5',
             'invitados.*' => 'nullable|string|max:255',
             'ninos' => 'nullable|array|max:5',
             'ninos.*' => 'boolean',
+            'bebidas_cena_acompanantes' => 'nullable|array|max:5',
+            'bebidas_cena_acompanantes.*' => 'nullable|string|max:255',
+            'bebidas_fiesta_acompanantes' => 'nullable|array|max:5',
+            'bebidas_fiesta_acompanantes.*' => 'nullable|string|max:255',
             'restricciones' => 'nullable|string|max:1000',
         ]);
 
@@ -29,16 +35,22 @@ class InvitadoController extends Controller
         $invitados_adicionales = [];
         $invitados = $validated['invitados'] ?? [];
         $ninos = $validated['ninos'] ?? [];
+        $bebidasCenaAcompanantes = $validated['bebidas_cena_acompanantes'] ?? [];
+        $bebidasFiestaAcompanantes = $validated['bebidas_fiesta_acompanantes'] ?? [];
         foreach ($invitados as $i => $nombre) {
             $invitados_adicionales[] = [
                 'nombre' => $nombre,
-                'nino' => isset($ninos[$i]) ? (bool)$ninos[$i] : false
+                'nino' => isset($ninos[$i]) ? (bool)$ninos[$i] : false,
+                'bebida_cena' => $bebidasCenaAcompanantes[$i] ?? null,
+                'bebida_fiesta' => $bebidasFiestaAcompanantes[$i] ?? null
             ];
         }
 
         $invitado = Invitado::create([
             'nombre' => $validated['nombre'],
             'telefono' => $validated['telefono'],
+            'bebida_cena' => $validated['bebida_cena'] ?? null,
+            'bebida_fiesta' => $validated['bebida_fiesta'] ?? null,
             'invitados_adicionales' => $invitados_adicionales,
             'restricciones' => $validated['restricciones'] ?? null,
         ]);

@@ -14,6 +14,8 @@ class CreateInvitadosTable extends Migration
             $table->string('telefono');
             $table->json('invitados_adicionales')->nullable();
             $table->text('restricciones')->nullable();
+            $table->string('bebida_cena')->nullable();
+            $table->string('bebida_fiesta')->nullable();
             $table->timestamps();
         });
     }
