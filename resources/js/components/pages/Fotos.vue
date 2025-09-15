@@ -1,20 +1,41 @@
 <template>
             <v-container fluid class="pa-4">
                 <h2 class="mb-6 text-center font-weight-bold">Galería de Fotos y Videos</h2>
-                <div v-if="$store.getters.isUserLogged" class="d-flex justify-center mb-4">
+                <div v-if="$store.getters.isUserLogged" class="d-flex justify-center mb-4" style="gap: 12px;">
+                    <!-- Input para subir archivo (galería o archivos) -->
                     <input
                         ref="fileInput"
                         type="file"
-                        :accept="isMobile ? 'image/*,video/*' : 'image/*,video/*'"
-                        :capture="isMobile ? 'environment' : undefined"
+                        accept="image/*,video/*"
                         multiple
                         style="display:none"
                         @change="handleFileUpload"
                     />
-                    <v-btn color="primary" @click="$refs.fileInput.click()">
-                        <v-icon left>mdi-upload</v-icon>
-                        Subir {{ isMobile ? 'foto/video o hacer foto' : 'fotos o videos' }}
-                    </v-btn>
+                    <!-- Input para tomar foto (solo imagen, cámara) -->
+                    <input
+                        ref="cameraInput"
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        style="display:none"
+                        @change="handleFileUpload"
+                    />
+                    <template v-if="isMobile">
+                        <v-btn color="primary" @click="$refs.cameraInput.click()">
+                            <v-icon left>mdi-camera</v-icon>
+                            Tomar foto
+                        </v-btn>
+                        <v-btn color="primary" @click="$refs.fileInput.click()">
+                            <v-icon left>mdi-upload</v-icon>
+                            Subir archivo
+                        </v-btn>
+                    </template>
+                    <template v-else>
+                        <v-btn color="primary" @click="$refs.fileInput.click()">
+                            <v-icon left>mdi-upload</v-icon>
+                            Subir fotos o videos
+                        </v-btn>
+                    </template>
                 </div>
                 <div v-if="mediaList.length === 0" class="text-center grey--text mt-8">No hay imágenes ni videos para mostrar.</div>
                 <v-simple-table class="media-table" v-else>
