@@ -46,9 +46,9 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn v-if="viewPage=='login'" color="primary" text @click="login()">Iniciar Sesión</v-btn>
-                <v-btn v-if="viewPage=='signup'" color="primary" text @click="signup()">Registrarse</v-btn>
-                <v-btn color="primary" text @click="$emit('cancel')">Cerrar</v-btn>
+                <v-btn v-if="viewPage=='login'" class="confirm-btn-bg" color="primary" text @click="login()">Iniciar Sesión</v-btn>
+                <v-btn v-if="viewPage=='signup'" class="confirm-btn-bg" color="primary" text @click="signup()">Registrarse</v-btn>
+                <v-btn class="cancel-btn-bg"  color="primary" text @click="$emit('cancel')">Cancelar</v-btn>
             </v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -127,3 +127,23 @@ export default {
     }
 }
 </script>
+<style scoped>
+.confirm-btn-bg {
+    background-image: url('/images/btn-bg-8B5CF6.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff !important;
+    border: none;
+    box-shadow: 0 2px 8px rgba(56,178,172,0.10);
+}
+.cancel-btn-bg {
+    background-image: url('/images/btn-bg-red.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff !important;
+    border: none;
+    box-shadow: 0 2px 8px rgba(56,178,172,0.10);
+}
+</style>

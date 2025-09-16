@@ -47,8 +47,8 @@
     <div v-if="selectedTrack && !selectedTrack.preview" style="color: #888; margin-bottom: 16px;">Esta canción no tiene preview disponible.</div>
     <v-btn
       v-if="this.$store.getters.isUserLogged"
-      color="purple darken-4"
-      class="ma-2"
+      text
+      class="ma-2 confirm-btn-bg"
       style="width: 200px;"
       :disabled="!selectedTrack"
       @click="addTrack"
@@ -173,3 +173,14 @@ export default {
   }
 }
 </script>
+<style scoped>
+.confirm-btn-bg {
+    background-image: url('/images/btn-bg-8B5CF6.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff !important;
+    border: none;
+    box-shadow: 0 2px 8px rgba(56,178,172,0.10);
+}
+</style>

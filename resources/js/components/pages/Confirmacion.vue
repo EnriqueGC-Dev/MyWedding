@@ -93,7 +93,7 @@
                 <v-btn
                     large
                     type="submit"
-                    class="mt-2 text-white confirm-btn-bg"
+                    :class="['mt-2', 'text-white', isFormReallyValid ? 'confirm-btn-bg' : 'disabled-btn-bg']"
                     :disabled="!isFormReallyValid"
                 >
                     Confirmar
@@ -201,6 +201,15 @@ export default {
 }
 
 .confirm-btn-bg {
+    background-image: url('/images/btn-bg-8B5CF6.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff !important;
+    border: none;
+    box-shadow: 0 2px 8px rgba(56,178,172,0.10);
+}
+.disabled-btn-bg {
     background-image: url('/images/btn-bg.png');
     background-size: cover;
     background-position: center;

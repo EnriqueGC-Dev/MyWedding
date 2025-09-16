@@ -21,17 +21,17 @@
                         @change="handleFileUpload"
                     />
                     <template v-if="isMobile">
-                        <v-btn color="primary" @click="$refs.cameraInput.click()">
+                        <v-btn class="confirm-btn-bg"  @click="$refs.cameraInput.click()">
                             <v-icon left>mdi-camera</v-icon>
                             Tomar foto
                         </v-btn>
-                        <v-btn color="primary" @click="$refs.fileInput.click()">
+                        <v-btn class="confirm-btn-bg"  @click="$refs.fileInput.click()">
                             <v-icon left>mdi-upload</v-icon>
                             Subir archivo
                         </v-btn>
                     </template>
                     <template v-else>
-                        <v-btn color="primary" @click="$refs.fileInput.click()">
+                        <v-btn class="confirm-btn-bg"  @click="$refs.fileInput.click()">
                             <v-icon left>mdi-upload</v-icon>
                             Subir fotos o videos
                         </v-btn>
@@ -216,5 +216,14 @@ export default {
     position: absolute;
     right: 0;
     bottom: 0;
+}
+.confirm-btn-bg {
+    background-image: url('/images/btn-bg-8B5CF6.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff !important;
+    border: none;
+    box-shadow: 0 2px 8px rgba(56,178,172,0.10);
 }
 </style>
