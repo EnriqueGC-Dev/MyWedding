@@ -9,16 +9,16 @@ class Cancion extends Model
     protected $table = 'canciones';
 
     protected $fillable = [
-        'user_id',
-        'title',
-        'artist',
-        'photo',
-        'url',
-        'preview',
-        'likes',
-        'dislikes',
-        'user_like',
-        'user_dislike',
+    'user_id',
+    'title',
+    'artist',
+    'photo',
+    'url',
+    'deezer_id',
+    'likes',
+    'dislikes',
+    'user_like',
+    'user_dislike',
     ];
 
     protected $casts = [

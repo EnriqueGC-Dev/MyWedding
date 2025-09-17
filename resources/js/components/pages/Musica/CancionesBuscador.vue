@@ -142,7 +142,7 @@ export default {
           artist: this.selectedTrack.artist.name,
           photo: this.selectedTrack.album.cover_medium,
           url: this.selectedTrack.link,
-          preview: this.selectedTrack.preview
+          deezer_id: this.selectedTrack.id
         };
         // Obtener el token CSRF de la meta etiqueta
         const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');

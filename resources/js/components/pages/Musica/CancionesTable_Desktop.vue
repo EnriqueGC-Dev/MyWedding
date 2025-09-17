@@ -122,7 +122,7 @@ export default {
         this.refreshInterval = setInterval(async () => {
       await this.fetchUser();
       this.fetchSongs();
-    }, 2000);
+    }, 20000000);
 
   },
   beforeUnmount() {
@@ -150,12 +150,28 @@ export default {
       try {
         const response = await fetch('/canciones-list', { credentials: 'include' });
         if (!response.ok) throw new Error('Error al cargar las canciones');
-        this.songs = await response.json();
+        let songs = await response.json();
+        // Consultar el endpoint proxy del backend para cada deezer_id y añadir el campo preview
+        songs = await Promise.all(songs.map(async song => {
+          if (song.deezer_id) {
+            try {
+              const proxyRes = await fetch(`/deezer-preview/${song.deezer_id}`);
+              if (proxyRes.ok) {
+                const proxyData = await proxyRes.json();
+                if (proxyData && proxyData.preview) song.preview = proxyData.preview;
+              }
+            } catch {}
+          }
+          return song;
+        }));
+        this.songs = songs;
+        console.log(this.songs);
         this.changePage(0); // Actualiza la página actual
       } catch (e) {
         this.songs = [];
       }
     },
+
     togglePreview(song) {
       if (!song.preview) {
         this.showSnackbar('Esta canción no tiene preview disponible.', 'red');

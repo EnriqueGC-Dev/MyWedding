@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('artist');
             $table->string('photo')->nullable();
             $table->string('url');
-            $table->longText('preview')->nullable();
+            $table->integer('deezer_id')->nullable();
             $table->unsignedInteger('likes')->default(0);
             $table->unsignedInteger('dislikes')->default(0);
             $table->json('user_like')->nullable();

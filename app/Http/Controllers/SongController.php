@@ -7,6 +7,24 @@ use App\Models\Cancion;
 
 class SongController extends Controller
 {
+	/**
+	 * Devuelve el campo preview de Deezer para un deezer_id
+	 */
+	public function deezerPreview($deezer_id)
+	{
+		$url = "https://api.deezer.com/track/" . $deezer_id;
+		try {
+			$response = file_get_contents($url);
+			$data = json_decode($response, true);
+			if (isset($data['preview'])) {
+				return response()->json(['preview' => $data['preview']]);
+			} else {
+				return response()->json(['error' => 'Preview no encontrado'], 404);
+			}
+		} catch (\Exception $e) {
+			return response()->json(['error' => 'Error al consultar Deezer'], 500);
+		}
+	}
 	public function store(Request $request)
 	{
 		$validated = $request->validate([
@@ -14,7 +32,7 @@ class SongController extends Controller
 			'artist' => 'required|string|max:255',
 			'photo' => 'nullable|string|max:255',
 			'url' => 'required|string|max:255',
-			'preview' => 'nullable|string',
+			'deezer_id' => 'required|integer',
 		]);
 
 		$user = $request->user();
@@ -28,7 +46,7 @@ class SongController extends Controller
 			'artist' => $validated['artist'],
 			'photo' => $validated['photo'] ?? null,
 			'url' => $validated['url'],
-			'preview' => $validated['preview'] ?? null,
+			'deezer_id' => $validated['deezer_id'],
 			'likes' => 0,
 			'dislikes' => 0,
 		]);

@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -15,12 +16,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/canciones', [SongController::class, 'store']);
     Route::post('/canciones/{id}/vote', [SongController::class, 'vote']);
 });
+// Endpoint proxy para obtener el preview de Deezer
+Route::get('/deezer-preview/{deezer_id}', [SongController::class, 'deezerPreview']);
+
 Route::get('/canciones-list', function() {
     return \App\Models\Cancion::with('user:id,name')->get();
 });
 
 Route::get('/media-list', [FotosController::class, 'index']);
 Route::post('/upload-media', UploadMediaController::class)->middleware('auth');
+
 
 Route::post('/signup', [UserController::class, 'signup']);
 Route::post('/login', [UserController::class, 'login']);
