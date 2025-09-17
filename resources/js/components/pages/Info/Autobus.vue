@@ -1,0 +1,3 @@
+<template>
+    Bus page
+</template>
